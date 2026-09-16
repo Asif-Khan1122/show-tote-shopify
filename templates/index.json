@@ -1,0 +1,119 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_tRaBTH": {
+          "type": "heading",
+          "settings": {
+            "heading": "Our Newest Collection is Here",
+            "heading_size": "h1"
+          }
+        },
+        "text_PM7Vam": {
+          "type": "text",
+          "settings": {
+            "text": "Breeze through security with refined silhouettes and fresh colors, specially designed for every event on your calendar.",
+            "text_style": "body"
+          }
+        },
+        "buttons_Ge6bjf": {
+          "type": "buttons",
+          "settings": {
+            "button_label_1": "FIND YOUR VENUE",
+            "button_link_1": "#",
+            "button_style_secondary_1": false,
+            "button_label_2": "SHOP BAGS",
+            "button_link_2": "#",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_tRaBTH",
+        "text_PM7Vam",
+        "buttons_Ge6bjf"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/tote-bg.webp",
+        "mobile_image": "shopify://shop_images/Hero_Group_Shot-1x1_1.jpg",
+        "image_overlay_opacity": 0,
+        "image_height": "large",
+        "image_behavior": "none",
+        "desktop_content_position": "middle-left",
+        "desktop_content_alignment": "center",
+        "show_text_box": true,
+        "color_scheme": "",
+        "stack_images_on_mobile": true,
+        "mobile_content_alignment": "center",
+        "show_text_below": true
+      }
+    },
+    "product_tabs_znLetM": {
+      "type": "tabs",
+      "blocks": {
+        "tab_Yik47Q": {
+          "type": "tab",
+          "settings": {
+            "label": "Best sellers",
+            "collection": "tote",
+            "description": "The styles everyone’s reaching for. Venue-approved, elegantly crafted, and made to move with you."
+          }
+        },
+        "tab_ppCj7R": {
+          "type": "tab",
+          "settings": {
+            "label": "LEATHER BAGS",
+            "collection": "tote",
+            "description": "Premium materials, refined details, and silhouettes designed to meet even the strictest bag policies. Elevated enough for dinner, effortless enough for game day."
+          }
+        },
+        "tab_WRyhtX": {
+          "type": "tab",
+          "settings": {
+            "label": "CLEAR BAGS",
+            "collection": "tote",
+            "description": "Transparent, but never ordinary. Our clear bags balance function and fashion with thoughtful proportions, luxe finishes, and are made for seamless entry."
+          }
+        },
+        "tab_cLrC6M": {
+          "type": "tab",
+          "settings": {
+            "label": "ACCESSORIES",
+            "collection": "tote",
+            "description": "The finishing touches that make your Show Tote work harder-straps, charms, and add-ons designed to personalize your bag and elevate every outing."
+          }
+        }
+      },
+      "block_order": [
+        "tab_Yik47Q",
+        "tab_ppCj7R",
+        "tab_WRyhtX",
+        "tab_cLrC6M"
+      ],
+      "name": "Product Tabs",
+      "settings": {
+        "title": "What's trending",
+        "shop_text": "Shop all",
+        "shop_url": "shopify://collections",
+        "tab_bg_color": "#f1efeb",
+        "tab_text_color": "#050505",
+        "active_tab_bg": "#651e15",
+        "active_tab_text": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "image_banner",
+    "product_tabs_znLetM"
+  ]
+}

@@ -1,0 +1,95 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "blocks": {
+        "mega_menu_combined_Wr9LK6": {
+          "type": "mega_menu_combined",
+          "settings": {
+            "target_menu": "Shop",
+            "show_banner": true,
+            "heading": "Find The Right Bag:",
+            "subheading": "Search by city, state, or venue to see which Show Tote bags are allowed in.",
+            "button_label": "View Deals",
+            "button_link": "#",
+            "bg_color": "#f4f4f4",
+            "text_color": "#121212",
+            "image_1": "shopify://shop_images/megamenu2.webp",
+            "card_heading_1": "Shop Clear",
+            "card_subheading_1": "Premium materials, refined details.",
+            "card_link_1": "#",
+            "image_2": "shopify://shop_images/megamenu1.jpg",
+            "card_heading_2": "Best Sellers",
+            "card_subheading_2": "Transparent, but never ordinary.",
+            "card_link_2": "#",
+            "image_3": "shopify://shop_images/Frame_48101936.webp",
+            "card_heading_3": "The Full Lineup",
+            "card_subheading_3": "Venue-approved, thoughtfully designed.",
+            "card_link_3": "#"
+          }
+        },
+        "mega_menu_combined_6DpABF": {
+          "type": "mega_menu_combined",
+          "settings": {
+            "target_menu": "About",
+            "show_banner": true,
+            "heading": "Find The Right Bag:",
+            "subheading": "Search by city, state, or venue to see which Show Tote bags are allowed in.",
+            "button_label": "View Deals",
+            "button_link": "#",
+            "bg_color": "#dcd9ce",
+            "text_color": "#121212",
+            "image_1": "shopify://shop_images/assenseenonmega.webp",
+            "card_heading_1": "As Seen On",
+            "card_subheading_1": "Spotted at shows, games, and everywhere style meets the spotlight.",
+            "card_link_1": "#",
+            "image_2": "shopify://shop_images/Frame_481019365.webp",
+            "card_heading_2": "Our Story",
+            "card_subheading_2": "Built to navigate venue rules, so your night never misses a beat.",
+            "card_link_2": "#",
+            "image_3": "shopify://shop_images/Frame_48101936.webp",
+            "card_heading_3": "Explore The Collection",
+            "card_subheading_3": "Created for nights out and designed to pass the security gate with ease.",
+            "card_link_3": "#"
+          }
+        }
+      },
+      "block_order": [
+        "mega_menu_combined_Wr9LK6",
+        "mega_menu_combined_6DpABF"
+      ],
+      "settings": {
+        "logo_position": "middle-center",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "mega",
+        "sticky_header_type": "always",
+        "header_button_enable": true,
+        "header_button_text": "FIND YOUR VENUE",
+        "header_button_link": "#",
+        "show_line_separator": false,
+        "color_scheme": "scheme-2",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "margin_bottom": 0,
+        "padding_top": 9,
+        "padding_bottom": 9
+      }
+    }
+  },
+  "order": [
+    "header"
+  ]
+}

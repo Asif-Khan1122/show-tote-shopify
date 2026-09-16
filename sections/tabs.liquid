@@ -1,0 +1,850 @@
+{{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer></script>
+
+<section id="ProductTabs-{{ section.id }}" class="product-tabs">
+  <div class="page-width">
+    <h2 class="product-tabs__title">{{ section.settings.title }}</h2>
+
+    <div class="product-tabs__header">
+      <div class="product-tabs__buttons" role="tablist">
+        {% for block in section.blocks %}
+          <a
+            class="product-tabs__tab{% if forloop.first %} is-active{% endif %}"
+            type="button"
+            role="tab"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            data-tab="{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
+            {{ block.settings.label }}
+          </a>
+        {% endfor %}
+      </div>
+      {% if section.settings.shop_url != blank %}
+        <a class="product-tabs__shop" href="{{ section.settings.shop_url }}">
+          {{ section.settings.shop_text }}
+        </a>
+      {% endif %}
+    </div>
+
+    {% for block in section.blocks %}
+      {% assign collection = collections[block.settings.collection] %}
+      <div
+        class="product-tabs__panel{% if forloop.first %} is-active{% endif %}"
+        data-panel="{{ block.id }}"
+        role="tabpanel"
+      >
+        <div class="product-tabs__intro">
+          <p>{{ block.settings.description }}</p>
+          <div class="product-tabs__arrows">
+            <button
+              type="button"
+              class="product-tabs__arrow product-tabs__arrow--prev-{{ block.id }}"
+              aria-label="Previous products"
+            >
+              <img src="{{ 'left-arrow.svg' | asset_url }}" alt="" width="28" height="28">
+            </button>
+            <button
+              type="button"
+              class="product-tabs__arrow product-tabs__arrow--next-{{ block.id }}"
+              aria-label="Next products"
+            >
+              <img src="{{ 'right-arrow.svg' | asset_url }}" alt="" width="28" height="28">
+            </button>
+          </div>
+        </div>
+
+        <div class="swiper swiper-{{ block.id }}">
+          <div class="swiper-wrapper">
+            {% if collection != blank and collection.products.size > 0 %}
+              {% for product in collection.products limit: 8 %}
+                {% assign current_variant = product.selected_or_first_available_variant %}
+                <div class="swiper-slide product-tabs__product">
+                  <div class="custom-card-product">
+                    {%- comment -%} Product Image {%- endcomment -%}
+                    <div class="custom-card__media">
+                      <a href="{{ product.url }}" class="custom-card__media-link">
+                        {% if product.featured_media %}
+                          <img
+                            src="{{ product.featured_media | image_url: width: 500 }}"
+                            alt="{{ product.featured_media.alt | escape }}"
+                            loading="lazy"
+                            width="500"
+                            height="500"
+                            class="custom-card__img custom-card__img--primary"
+                          >
+                        {% else %}
+                          {{ 'product-1' | placeholder_svg_tag: 'custom-card__img custom-card__img--primary' }}
+                        {% endif %}
+
+                        {% if product.media[1] %}
+                          <img
+                            src="{{ product.media[1] | image_url: width: 500 }}"
+                            alt=""
+                            loading="lazy"
+                            width="500"
+                            height="500"
+                            class="custom-card__img custom-card__img--secondary"
+                          >
+                        {% endif %}
+                      </a>
+
+                      {%- comment -%} Add to cart on hover {%- endcomment -%}
+                      <div class="custom-card__quick-add">
+                        {% if product.has_only_default_variant %}
+                          <button
+                            type="button"
+                            class="custom-card__atc-btn{% unless current_variant.available %} is-disabled{% endunless %}"
+                            data-variant-id="{{ current_variant.id }}"
+                            {% unless current_variant.available %}
+                              disabled
+                            {% endunless %}
+                            aria-label="{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}"
+                          >
+                            <span class="custom-card__atc-icon">
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M6 8h12l-1 12.5a1.5 1.5 0 0 1-1.5 1.5h-8a1.5 1.5 0 0 1-1.5-1.5L6 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                <path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="18.5" cy="17.5" r="4.5" fill="#000" stroke="#fff" stroke-width="1.2"/>
+                                <path d="M18.5 15.5v4M16.5 17.5h4" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
+                              </svg>
+                            </span>
+                            <span class="custom-card__atc-label">
+                              {% if current_variant.available %}
+                                Add
+                              {% else %}
+                                Sold out
+                              {% endif %}
+                            </span>
+                          </button>
+                        {% else %}
+                          <a
+                            href="{{ product.url }}"
+                            class="custom-card__atc-btn custom-card__atc-btn--link"
+                            aria-label="Select options"
+                          >
+                            <span class="custom-card__atc-icon">
+                              <img
+                                src="{{ 'add-to-cart.svg' | asset_url }}"
+                                alt="Add to cart"
+                                width="20"
+                                height="20"
+                              >
+                            </span>
+                            <span class="custom-card__atc-label">Add</span>
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="custom-card__info">
+                      <div class="card_title">
+                        <h3 class="custom-card__title">
+                          <a href="{{ product.url }}">{{ product.title }}</a>
+                        </h3>
+
+                        <div class="custom-card__price">
+                          {% if product.compare_at_price > product.price %}
+                            <span class="custom-card__price--sale">{{ product.price | money }}</span>
+                            <s class="custom-card__price--compare">{{ product.compare_at_price | money }}</s>
+                          {% else %}
+                            <span>{{ product.price | money }}</span>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      <div class="meta__content">
+                        {% if product.metafields.custom.colorway != blank %}
+                          <div class="colorway_meta">{{ product.metafields.custom.colorway }}</div>
+                        {% endif %}
+
+                        {% if product.metafields.custom.dimensions_display != blank %}
+                          <div
+                            class="dimensions_meta"
+                            data-type="{{ product.metafields.custom.dimensions_type }}"
+                            data-height="{{ product.metafields.custom.dimensions_height }}"
+                            data-width="{{ product.metafields.custom.dimensions_width }}"
+                            data-depth="{{ product.metafields.custom.dimensions_depth }}"
+                          >
+                            {{ product.metafields.custom.dimensions_display }}
+                          </div>
+                        {% endif %}
+                      </div>
+                      {%- comment -%} Product Color Swatches {%- endcomment -%}
+                      {% unless product.has_only_default_variant %}
+                        <div class="custom-card__swatches">
+                          {% for option in product.options_with_values %}
+                            {% assign option_name_downcase = option.name | downcase %}
+                            {% if option_name_downcase contains 'color'
+                              or option_name_downcase contains 'colour'
+                              or option_name_downcase contains 'rang'
+                            %}
+                              <div class="custom-card__swatch-list">
+                                {% for value in option.values %}
+                                  {% assign color_handle = value | handleize %}
+
+                                  {%- comment -%} Variant Image Mapping {%- endcomment -%}
+                                  {% assign variant_image = '' %}
+                                  {% assign matched_variant_id = '' %}
+                                  {% for variant in product.variants %}
+                                    {% if variant.options contains value %}
+                                      {% assign matched_variant_id = variant.id %}
+                                      {% if variant.featured_media %}
+                                        {% assign variant_image = variant.featured_media | image_url: width: 500 %}
+                                      {% endif %}
+                                      {% break %}
+                                    {% endif %}
+                                  {% endfor %}
+
+                                  <button
+                                    type="button"
+                                    class="custom-card__swatch{% if option.selected_value == value %} is-active{% endif %}"
+                                    style="background-color: {{ color_handle }};"
+                                    title="{{ value }}"
+                                    aria-label="{{ value }}"
+                                    data-color-name="{{ value }}"
+                                    data-variant-id="{{ matched_variant_id }}"
+                                    data-product-url="{{ product.url }}"
+                                    {% if variant_image != blank %}
+                                      data-variant-image="{{ variant_image }}"
+                                    {% endif %}
+                                  ></button>
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      {% endunless %}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="swiper-slide">
+                <p>Select a collection for this tab or add products to it.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+  #ProductTabs-{{ section.id }} {
+    padding: 38px 0;
+    color: #000;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__title {
+    margin: 0 0 28px;
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: #1b1b1b;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: .5px;
+    font-weight: 500;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__buttons {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  .card_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__tab {
+    padding: 14px 18px;
+    background-color: {{ section.settings.tab_bg_color }};
+    color: {{ section.settings.tab_text_color }};
+    cursor: pointer;
+    font: inherit;
+    font-weight: 500;
+    transition: all 0.25s ease-in-out;
+    border: none;
+    font-size: 14px;
+    letter-spacing: .42px;
+    line-height: normal;
+    max-width: 150px;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__tab.is-active,
+  #ProductTabs-{{ section.id }} .product-tabs__tab:hover {
+    background-color: {{ section.settings.active_tab_bg }};
+    color: {{ section.settings.active_tab_text }};
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__shop {
+    padding: 14px 18px;
+    background: #000;
+    color: #fff;
+    width: 100%;
+    max-width: 200px;
+    align-items: center;
+    border: 1px solid #000;
+    text-decoration: none;
+    white-space: nowrap;
+    font-size: clamp(10px, 3vw, 14px);
+    font-weight: 500;
+    text-align: center;
+    line-height: normal;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__shop:hover {
+    background: #fff;
+    color: #050505;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__panel {
+    display: none;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__panel.is-active {
+    display: block;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 28px;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__intro p {
+    margin: 0;
+    font-size: 16px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 135%;
+    color: #1b1b1b;
+    max-width: 600px;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__arrows {
+    display: flex;
+    gap: 10px;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__arrow {
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(var(--color-foreground), .25);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #ProductTabs-{{ section.id }} .product-tabs__arrow.swiper-button-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  #ProductTabs-{{ section.id }} .swiper {
+    width: 100%;
+    overflow: hidden;
+  }
+  #ProductTabs-{{ section.id }} .swiper-slide {
+    height: auto;
+  }
+  #ProductTabs-{{ section.id }} .custom-card-product {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    height: 100%;
+  }
+
+  /* Media wrapper: holds both images + quick add overlay */
+  #ProductTabs-{{ section.id }} .custom-card__media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background-color: #f5f5f5;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__media-link {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.35s ease, transform 0.6s ease;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__img--primary {
+    opacity: 1;
+    z-index: 1;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__img--secondary {
+    opacity: 0;
+    z-index: 2;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__media:hover .custom-card__img--secondary {
+    opacity: 1;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__media:hover .custom-card__img--primary {
+    opacity: 0;
+  }
+
+  #ProductTabs-{{ section.id }} .custom-card__quick-add {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 3;
+    opacity: 0;
+    transform: translateY(8px) scale(.94);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__media:hover .custom-card__quick-add {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    padding: 0;
+    background: #fff;
+    color: #1b1b1b;
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .2px;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-icon {
+    flex: 0 0 30px;
+    width: 22px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1b1b1b;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-label {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-right: 0;
+    transition: max-width 0.3s ease, opacity 0.2s ease 0.05s, padding-right 0.3s ease;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn:hover .custom-card__atc-label,
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn:focus-visible .custom-card__atc-label {
+    max-width: 90px;
+    opacity: 1;
+    padding-right: 18px;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .24);
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn.is-disabled,
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn[disabled] {
+    color: #9c9c9c;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn.is-added .custom-card__atc-icon {
+    color: #2f7d3c;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn.is-added .custom-card__atc-label {
+    color: #2f7d3c;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn.is-error .custom-card__atc-icon,
+  #ProductTabs-{{ section.id }} .custom-card__atc-btn.is-error .custom-card__atc-label {
+    color: #b3261e;
+  }
+
+  #ProductTabs-{{ section.id }} .custom-card__info {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 10px 3px;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__title {
+    font-size: clamp(14px, 3vw, 15px);
+    font-weight: 500;
+    margin: 0;
+    line-height: normal;
+    font-family: 'Space Grotesk', sans-serif;
+    color: #1b1b1b;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__title a {
+    text-decoration: none;
+    color: #1b1b1b;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__price {
+    font-size: clamp(11px, 3vw, 14px);
+    font-weight: 500;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__price--sale {
+    color: #d90429;
+    font-weight: 600;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__price--compare {
+    color: #888888;
+    margin-left: 6px;
+    font-size: 12px;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__description {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.4;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__swatches {
+    margin-top: 6px;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__swatch-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  #ProductTabs-{{ section.id }} .custom-card__swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px #e5e5e5;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    background-size: cover;
+    background-position: center;
+  }
+
+  #ProductTabs-{{ section.id }} .custom-card__swatch.is-active {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px #000000;
+  }
+
+  #ProductTabs-{{ section.id }} .custom-card__swatch:hover:not(.is-active) {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px #111111;
+  }
+       @media screen and (max-width: 749px) {
+        #ProductTabs-{{ section.id }} .product-tabs__title {
+          font-size: 26px;
+        }
+        #ProductTabs-{{ section.id }} .product-tabs__header {
+          display: block;
+        }
+        #ProductTabs-{{ section.id }} .product-tabs__shop {
+          display: inline-block;
+          margin-top: 20px;
+        }
+        /* On touch devices there's no hover, so keep the icon pinned in the
+           corner, always visible, and already expanded to show the label */
+        #ProductTabs-{{ section.id }} .custom-card__quick-add {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          pointer-events: auto;
+        }
+        #ProductTabs-{{ section.id }} .custom-card__atc-label {
+          max-width: 90px;
+          opacity: 1;
+          padding-right: 16px;
+        }
+        #ProductTabs-{{ section.id }} .custom-card__img--secondary {
+          display: none;
+        }
+      }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const root = document.querySelector('#ProductTabs-{{ section.id }}');
+    if (!root) return;
+
+    const tabs = root.querySelectorAll('[data-tab]');
+    const panels = root.querySelectorAll('[data-panel]');
+    const swiperInstances = {};
+
+    // Initialize Swiper for each panel
+    panels.forEach((panel) => {
+      const blockId = panel.dataset.panel;
+      const swiperContainer = panel.querySelector(`.swiper-${blockId}`);
+
+      if (swiperContainer) {
+        swiperInstances[blockId] = new Swiper(swiperContainer, {
+          slidesPerView: 1.2,
+          spaceBetween: 16,
+          observer: true,
+          observeParents: true,
+          simulateTouch: true,
+          grabCursor: true,
+          freeMode: {
+            enabled: true,
+            sticky: false,
+            momentum: true,
+            momentumRatio: 1,
+          },
+          mousewheel: {
+            forceToAxis: true,
+            sensitivity: 1,
+            releaseOnEdges: true,
+          },
+          navigation: {
+            nextEl: `.product-tabs__arrow--next-${blockId}`,
+            prevEl: `.product-tabs__arrow--prev-${blockId}`,
+          },
+          breakpoints: {
+            550: { slidesPerView: 2.2, spaceBetween: 8 },
+            750: { slidesPerView: 3.2, spaceBetween: 10 },
+            990: { slidesPerView: 4, spaceBetween: 10 },
+          },
+        });
+      }
+    });
+
+    // Tab Switching Logic
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.dataset.tab;
+
+        tabs.forEach((item) => {
+          item.classList.remove('is-active');
+          item.setAttribute('aria-selected', 'false');
+        });
+
+        panels.forEach((panel) => {
+          panel.classList.remove('is-active');
+        });
+
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+
+        const activePanel = root.querySelector(`[data-panel="${tabId}"]`);
+        if (activePanel) {
+          activePanel.classList.add('is-active');
+          if (swiperInstances[tabId]) {
+            swiperInstances[tabId].update();
+          }
+        }
+      });
+    });
+
+    // Swatch Click Listener — navigates to that color's product page (variant),
+    // using the product's own URL + the matched variant id. No hardcoded URLs,
+    // no new data structure — this uses the same product.url / variant mapping
+    // that already exists in the Liquid above.
+    root.querySelectorAll('.custom-card__swatch').forEach((swatch) => {
+      swatch.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const productUrl = swatch.dataset.productUrl;
+        const variantId = swatch.dataset.variantId;
+
+        if (!productUrl) return;
+
+        if (variantId) {
+          window.location.href = `${productUrl}?variant=${variantId}`;
+        } else {
+          // Fallback: no matching variant found, just go to the product page
+          window.location.href = productUrl;
+        }
+      });
+    });
+
+    // Quick "Add to cart" on hover
+    root.querySelectorAll('.custom-card__atc-btn[data-variant-id]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (btn.disabled || btn.classList.contains('is-disabled')) return;
+
+        const variantId = btn.dataset.variantId;
+        const label = btn.querySelector('.custom-card__atc-label');
+        const originalText = label.textContent;
+
+        btn.disabled = true;
+        label.textContent = 'Adding...';
+
+        try {
+          const response = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] }),
+          });
+
+          if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.description || 'Could not add item to cart');
+          }
+
+          label.textContent = 'Added ✓';
+          btn.classList.add('is-added');
+
+          // Notify the theme's cart drawer / cart icon bubble to refresh, if present
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          const cartDrawer = document.querySelector('cart-drawer, cart-notification');
+          if (cartDrawer) {
+            fetch('/cart.js')
+              .then((r) => r.json())
+              .then((cart) => {
+                document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
+                if (typeof cartDrawer.renderContents === 'function') {
+                  fetch(window.location.pathname + '?section_id=cart-drawer')
+                    .then((r) => r.text())
+                    .then((html) => {
+                      const parser = new DOMParser();
+                      const doc = parser.parseFromString(html, 'text/html');
+                      const newDrawer = doc.querySelector('cart-drawer');
+                      if (newDrawer) cartDrawer.innerHTML = newDrawer.innerHTML;
+                      if (typeof cartDrawer.open === 'function') cartDrawer.open();
+                    })
+                    .catch(() => {});
+                }
+              })
+              .catch(() => {});
+          }
+
+          setTimeout(() => {
+            btn.classList.remove('is-added');
+            label.textContent = originalText;
+            btn.disabled = false;
+          }, 1800);
+        } catch (err) {
+          label.textContent = 'Error';
+          btn.classList.add('is-error');
+          setTimeout(() => {
+            btn.classList.remove('is-error');
+            label.textContent = originalText;
+            btn.disabled = false;
+          }, 1800);
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product tabs",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "What's trending"
+    },
+    {
+      "type": "text",
+      "id": "shop_text",
+      "label": "Button text",
+      "default": "Shop all"
+    },
+    {
+      "type": "url",
+      "id": "shop_url",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "tab_bg_color",
+      "label": "Tab background",
+      "default": "#f1efeb"
+    },
+    {
+      "type": "color",
+      "id": "tab_text_color",
+      "label": "Tab text color",
+      "default": "#050505"
+    },
+    {
+      "type": "color",
+      "id": "active_tab_bg",
+      "label": "Active tab background",
+      "default": "#651e15"
+    },
+    {
+      "type": "color",
+      "id": "active_tab_text",
+      "label": "Active tab text color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Product tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Tab label",
+          "default": "Best sellers"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "The styles everyone's reaching for."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product tabs slider",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "label": "BEST SELLERS"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "LEATHER BAGS"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "CLEAR BAGS"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "label": "ACCESSORIES"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
