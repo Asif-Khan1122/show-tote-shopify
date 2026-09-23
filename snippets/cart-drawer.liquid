@@ -46,23 +46,29 @@
             <div class="logo_wrapper" style="width: 120px;">
               <div class="logo_img">
                 <img
-                  src="//showtote.com/cdn/shop/files/Vector_1.png?v=1761765910&amp;width=91"
-                  alt=""
-                  srcset="//showtote.com/cdn/shop/files/Vector_1.png?v=1761765910&amp;width=91 91w"
+                  src="{{ 'Vector_1.webp' | asset_url }}"
+                  srcset="
+                    {{ 'Vector_1.webp' | asset_url }} 1x,
+                    https://showtote.com/cdn/shop/files/Vector_1.png?v=1761765910&width=182 2x
+                  "
+                  alt="Showtote Logo"
                   width="91"
                   height="68"
                   loading="lazy"
+                  decoding="async"
                 >
               </div>
 
               <div class="rolling_svg">
                 <img
-                  src="//showtote.com/cdn/shop/files/Layer_1.png?v=1762288281&amp;width=338"
-                  alt=""
+                  src="{{ 'Vector_2.webp' | asset_url }} 1x"
+                  ,
                   srcset="//showtote.com/cdn/shop/files/Layer_1.png?v=1762288281&amp;width=338 338w"
+                  alt="Showtote Logo"
                   width="338"
                   height="342"
                   loading="lazy"
+                  decoding="async"
                 >
               </div>
             </div>

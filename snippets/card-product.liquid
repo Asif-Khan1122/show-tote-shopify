@@ -207,6 +207,7 @@
               {%- endif -%}
 
               {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+              {% render 'card_product_swatches', card_product: card_product %}
               {%- if card_product.quantity_price_breaks_configured? -%}
                 {% if card_product.variants_count == 1 and quick_add == 'bulk' %}
                   {% liquid
@@ -625,3 +626,62 @@
     </div>
   </div>
 {%- endif -%}
+
+<script>
+  document.addEventListener('click', (event) => {
+    const swatch = event.target.closest('.custom-card__swatch');
+    if (!swatch) return;
+
+    const card = swatch.closest('.card-wrapper, .custom-card-product');
+    if (!card) return;
+
+    const {
+      variantId,
+      productUrl,
+      variantImage,
+      variantImage2x,
+      variantAvailable,
+      variantPrice,
+      variantCompareAtPrice,
+    } = swatch.dataset;
+
+    // toggle active state within this card's swatch group only
+    swatch
+      .closest('.custom-card__swatch-list')
+      ?.querySelectorAll('.custom-card__swatch')
+      .forEach((s) => s.classList.toggle('is-active', s === swatch));
+
+    // swap the card image
+    const img = card.querySelector('.card__media img, .custom-card__img--primary');
+    if (img && variantImage) {
+      img.src = variantImage;
+      if (variantImage2x) img.srcset = `${variantImage} 1x, ${variantImage2x} 2x`;
+    }
+
+    // update every link on the card to point at this variant
+    card.querySelectorAll('a[href]').forEach((link) => {
+      try {
+        const url = new URL(productUrl, window.location.origin);
+        url.searchParams.set('variant', variantId);
+        link.href = `${url.pathname}${url.search}`;
+      } catch (e) {
+        /* skip malformed hrefs */
+      }
+    });
+
+    // update price display, if this card shows one
+    const priceEl = card.querySelector('.custom-card__price, .price');
+    if (priceEl && variantPrice) {
+      const formatted = (Number(variantPrice) / 100).toLocaleString(undefined, {
+        style: 'currency',
+        currency: window.Shopify?.currency?.active || 'USD',
+      });
+      const saleEl = priceEl.querySelector('.custom-card__price--sale') || priceEl;
+      saleEl.textContent = formatted;
+    }
+
+    // update add-to-cart button's variant id, if present
+    const atcBtn = card.querySelector('[data-variant-id].custom-card__atc-btn');
+    if (atcBtn) atcBtn.dataset.variantId = variantId;
+  });
+</script>

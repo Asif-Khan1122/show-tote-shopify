@@ -126,8 +126,12 @@
                         {% else %}
                           <a
                             href="{{ product.url }}"
-                            class="custom-card__atc-btn custom-card__atc-btn--link"
-                            aria-label="Select options"
+                            class="custom-card__atc-btn custom-card__atc-btn--link{% unless current_variant.available %} is-disabled{% endunless %}"
+                            data-variant-id="{{ current_variant.id }}"
+                            {% unless current_variant.available %}
+                              aria-disabled="true"
+                            {% endunless %}
+                            aria-label="{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}"
                           >
                             <span class="custom-card__atc-icon">
                               <img
@@ -137,7 +141,13 @@
                                 height="20"
                               >
                             </span>
-                            <span class="custom-card__atc-label">Add</span>
+                            <span class="custom-card__atc-label">
+                              {% if current_variant.available %}
+                                Add
+                              {% else %}
+                                Sold out
+                              {% endif %}
+                            </span>
                           </a>
                         {% endif %}
                       </div>

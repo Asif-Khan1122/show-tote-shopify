@@ -1,0 +1,35 @@
+<div class="custom-card__swatches" role="group" aria-label="Choose a color">
+  {% for option in card_product.options_with_values %}
+    {% assign option_name_downcase = option.name | downcase %}
+    {% case option_name_downcase %}
+      {% when 'color', 'colour', 'rang' %}
+        <div class="custom-card__swatch-list">
+          {% for value in option.values %}
+            {% assign matched_variant = blank %}
+            {% for variant in card_product.variants %}
+              {% if variant.options contains value %}
+                {% assign matched_variant = variant %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+            {% if matched_variant != blank %}
+              {% assign color_handle = value | handleize %}
+              <button
+                type="button"
+                class="custom-card__swatch{% if option.selected_value == value %} is-active{% endif %}"
+                style="background-color: {{ color_handle }};"
+                title="{{ value | escape }}"
+                aria-label="{{ value | escape }}"
+                data-color-name="{{ value | escape }}"
+                data-product-url="{{ card_product.url }}"
+                data-variant-id="{{ matched_variant.id }}"
+                {% if matched_variant.featured_media %}
+                  data-variant-image="{{ matched_variant.featured_media | image_url: width: 533 }}"
+                {% endif %}
+              ></button>
+            {% endif %}
+          {% endfor %}
+        </div>
+    {% endcase %}
+  {% endfor %}
+</div>
